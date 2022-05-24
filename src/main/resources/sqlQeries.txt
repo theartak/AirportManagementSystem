@@ -1,0 +1,44 @@
+create database airport;
+use airport;
+
+create table company
+(
+    ID_cmp     int primary key auto_increment,
+    name_cmp   varchar(20),
+    date_found date
+);
+create table address
+(
+    ID_adrs int primary key auto_increment,
+    country varchar(50),
+    city    varchar(50)
+);
+create table passenger
+(
+    ID_psg   int primary key auto_increment,
+    name_psg varchar(50),
+    phone    varchar(20),
+    ID_adrs  int,
+    foreign key (ID_adrs) references address (ID_adrs) on delete  set null
+);
+create table trip
+(
+    trip_no   int primary key,
+    ID_cmp    int,
+    plane     varchar(15),
+    town_from varchar(20),
+    town_to   varchar(20),
+    time_out  time,
+    time_in   time,
+    foreign key (ID_cmp) references company (ID_cmp) on delete  set null
+);
+
+create table pass_in_trip
+(
+    trip_no   int,
+    ID_psg    int,
+    trip_date date,
+    place     varchar(10),
+    foreign key (trip_no) references trip (trip_no),
+    foreign key (ID_psg) references passenger(ID_psg)
+);
