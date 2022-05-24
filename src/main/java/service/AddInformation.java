@@ -1,134 +1,99 @@
 package service;
 
-import dao.PassInTripDao;
-import model.Address;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
+import model.*;
+import repository.*;
+import java.io.*;
+import java.sql.*;
 
 public class AddInformation {
-
-
-    public static void addCompaniesInfo() {
-        String file = "src/main/resources/companies.txt";
-        CompanyService companyService = new CompanyService();
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String s = bufferedReader.readLine();
-            String[] rslt = new String[2];
-            String[] dt = new String[3];
-
+    BufferedReader bufferedReader;
+    public void addPassenger() {
+        PassengerRepo passengerRepo = new PassengerRepo();
+        String[] read = new String[4];
+        String s = "";
+        try {
+            bufferedReader = new BufferedReader(new FileReader("src\\main\\resources\\passengers.txt"));
+            s = bufferedReader.readLine();
             while (true) {
                 s = bufferedReader.readLine();
                 if (s == null)
                     break;
-                rslt = s.split(",");
-                dt = rslt[1].split("/");
-                companyService.create(rslt[0], dt[2] + "-" + dt[0] + "-" + dt[1]);
-
+                read = s.split(",");
+                passengerRepo.create(new Passenger(read[0], read[1], (new Address(read[2], read[3]))));
             }
-
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("companies.txt file for read is not found");
-        }
-
-    }
-
-    public static void addAddressInfo() {
-        AddressService addressService = new AddressService();
-        String file = "src/main/resources/passengers.txt";
-        Set<Address> countryCity = new HashSet<>();
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String[] rslt = new String[4];
-            String s = bufferedReader.readLine();
-            while (true) {
-                s = bufferedReader.readLine();
-                if (s == null)
-                    break;
-                if (s.contains("'")) {
-                    s = s.replace("'", "՛");
-                }
-                rslt = s.split(",");
-                countryCity.add(new Address(rslt[2], rslt[3]));
-            }
-            for (Address address : countryCity) {
-                addressService.create(address.getCountry(), address.getCity());
-            }
-        } catch (IOException e) {
-            System.out.println("passengers.txt file for read is not found");
+            e.printStackTrace();
         }
     }
 
-    public static void addPassengersInfo() {
-        PassengerService passengerService = new PassengerService();
-        String file = "src/main/resources/passengers.txt";
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String[] rslt = new String[4];
-            String s = bufferedReader.readLine();
+    public void addCompany() {
+        CompanyRepo companyDao = new CompanyRepo();
+        String[] read;
+        String s = "";
+        String[] dt;
+        try {
+            bufferedReader = new BufferedReader(new FileReader("src\\\\main\\\\resources\\\\companies.txt"));
+            bufferedReader.readLine();
             while (true) {
                 s = bufferedReader.readLine();
-
                 if (s == null)
                     break;
-                if (s.contains("'")) {
-                    s = s.replace("'", "՛");
-                }
-                rslt = s.split(",");
-                passengerService.create(rslt[0], rslt[1], rslt[2], rslt[3]);
+                read = s.split(",");
+                dt = read[1].split("/");
+                companyDao.create(new Company(read[0], Date.valueOf(dt[2] + "-" + dt[0] + "-" + dt[1])));
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("passengers.txt file for read is not found");
+            e.printStackTrace();
         }
     }
 
-    public static void addTripsInfo() {
-        TripService tripService = new TripService();
-        String file = "src/main/resources/trip.txt";
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String[] rslt = new String[7];
-            String s = "";
+    public void addTrip() {
+        TripRepo tripRepo = new TripRepo();
+        CompanyRepo companyRepo = new CompanyRepo();
+        String[] read;
+        String s = "";
+        try {
+            bufferedReader = new BufferedReader(new FileReader("src\\\\main\\\\resources\\\\trips.txt"));
             while (true) {
                 s = bufferedReader.readLine();
-
                 if (s == null)
                     break;
-
-                rslt = s.split(",");
-                String time_out = rslt[5].split(" ")[1].substring(0, 8);
-                String time_in = rslt[6].split(" ")[1].substring(0, 8);
-                tripService.create(Integer.parseInt(rslt[0]), Integer.parseInt(rslt[1]), rslt[2], rslt[3], rslt[4],
-                        time_out, time_in);
+                read = s.split(",");
+                String time_out = read[5].split(" ")[1].substring(0, 8);
+                String time_in = read[6].split(" ")[1].substring(0, 8);
+                tripRepo.create(new Trip(Long.valueOf(read[0]), companyRepo.read(Long.valueOf(read[1])),
+                        read[2], read[3], read[4], Time.valueOf(time_out), Time.valueOf(time_in)));
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("trips.txt file for read is not found");
+            e.printStackTrace();
         }
     }
 
-    public static void addPass_In_TripInfo() {
+    public void passInTrip() {
+        PassInTripRepo passInTrip=new PassInTripRepo();
 
-        String file = "src/main/resources/pass_in_trip.txt";
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String[] rslt = new String[4];
-            String s = bufferedReader.readLine();
+        String[] read;
+        String s = "";
+        try {
+            bufferedReader = new BufferedReader(new FileReader("src\\\\main\\\\resources\\\\pass_in_trip.txt"));
+            bufferedReader.readLine();
             while (true) {
                 s = bufferedReader.readLine();
-
                 if (s == null)
                     break;
-
-                rslt = s.split(",");
-                new PassInTripDao().createForFile(Integer.parseInt(rslt[0]), Integer.parseInt(rslt[1]), rslt[2].split(" ")[0], rslt[3]);
+                read = s.split(",");
+                passInTrip.create(new PassInTrip(new PassInTrip.PassInTripId(Long.valueOf(read[0]),Long.valueOf(read[1]),Date.valueOf(read[2].split(" ")[0])),read[3]));
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("pass_in_trip.txt file for read is not found");
+            e.printStackTrace();
         }
     }
 }

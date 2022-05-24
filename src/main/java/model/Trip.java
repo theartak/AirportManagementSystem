@@ -1,106 +1,103 @@
 package model;
 
+import javax.persistence.*;
 import java.sql.Time;
-import java.util.Objects;
+import java.util.Set;
 
+
+@Entity
+@Table(name = "trip")
 public class Trip {
-    private int trip_no;
-    private int ID_cmp;
+    @Id
+    private long tripNumber;
+    @Column(length = 50)
     private String plane;
-    private String town_from;
-    private String town_to;
-    private Time time_out;
-    private Time time_in;
+    @Column(length = 50)
+    private String townFrom;
+    @Column(length = 50)
+    private String townTo;
+    @Column(length = 50)
+    private Time timeOut;
+    @Column(length = 50)
+    private Time timeIn;
 
-    public Trip(int trip_no, int ID_cmp, String plane, String town_from, String town_to, Time time_out, Time time_in) {
-        this.trip_no = trip_no;
-        this.ID_cmp = ID_cmp;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @ManyToMany
+    @JoinTable(name = "pass_in_trip", joinColumns = @JoinColumn(referencedColumnName = "tripNumber", name = "tripNumber"),
+            inverseJoinColumns = @JoinColumn(referencedColumnName = "id", name = "passengerID"))
+    private Set<Passenger> passengers;
+
+    public Trip(Long tripNumber, Company company, String plane, String townFrom, String townTo, Time timeOut, Time timeIn) {
+
+        this.tripNumber = tripNumber;
+        this.company = company;
         this.plane = plane;
-        this.town_from = town_from;
-        this.town_to = town_to;
-        this.time_out = time_out;
-        this.time_in = time_in;
+        this.townFrom = townFrom;
+        this.townTo = townTo;
+        this.timeOut = timeOut;
+        this.timeIn = timeIn;
     }
 
-    public int getTrip_no() {
-        return trip_no;
-    }
+    public Trip() {
 
-    public void setTrip_no(int trip_no) {
-        this.trip_no = trip_no;
-    }
-
-    public int getID_cmp() {
-        return ID_cmp;
-    }
-
-    public void setID_cmp(int ID_cmp) {
-        this.ID_cmp = ID_cmp;
-    }
-
-    public String getPlane() {
-        return plane;
     }
 
     public void setPlane(String plane) {
         this.plane = plane;
     }
 
-    public String getTown_from() {
-        return town_from;
+    public void setTimeOut(Time timeOut) {
+        this.timeOut = timeOut;
     }
 
-    public void setTown_from(String town_from) {
-        this.town_from = town_from;
+    public void setTimeIn(Time timeIn) {
+        this.timeIn = timeIn;
     }
 
-    public String getTown_to() {
-        return town_to;
+    public void setTownFrom(String townFrom) {
+        this.townFrom = townFrom;
     }
 
-    public void setTown_to(String town_to) {
-        this.town_to = town_to;
+    public void setTownTo(String townTo) {
+        this.townTo = townTo;
     }
 
-    public Time getTime_out() {
-        return time_out;
+    public void setTripNumber(long tripNumber) {
+        this.tripNumber = tripNumber;
     }
 
-    public void setTime_out(Time time_out) {
-        this.time_out = time_out;
+    public String getPlane() {
+        return plane;
     }
 
-    public Time getTime_in() {
-        return time_in;
+    public String getTownFrom() {
+        return townFrom;
     }
 
-    public void setTime_in(Time time_in) {
-        this.time_in = time_in;
+    public String getTownTo() {
+        return townTo;
+    }
+
+    public Time getTimeOut() {
+        return timeOut;
+    }
+
+    public Time getTimeIn() {
+        return timeIn;
     }
 
     @Override
     public String toString() {
         return "Trip{" +
-                "trip_no=" + trip_no +
-                ", ID_cmp=" + ID_cmp +
+                "tripNumber=" + tripNumber +
                 ", plane='" + plane + '\'' +
-                ", town_from='" + town_from + '\'' +
-                ", town_to='" + town_to + '\'' +
-                ", time_out=" + time_out +
-                ", time_in=" + time_in +
+                ", townFrom='" + townFrom + '\'' +
+                ", townTo='" + townTo + '\'' +
+                ", timeOut=" + timeOut +
+                ", timeIn=" + timeIn +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Trip trip = (Trip) o;
-        return trip_no == trip.trip_no && ID_cmp == trip.ID_cmp && plane.equals(trip.plane) && town_from.equals(trip.town_from) && town_to.equals(trip.town_to) && time_out.equals(trip.time_out) && time_in.equals(trip.time_in);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(trip_no, ID_cmp, plane, town_from, town_to, time_out, time_in);
     }
 }

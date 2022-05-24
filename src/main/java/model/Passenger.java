@@ -1,62 +1,61 @@
 package model;
 
-import java.util.Objects;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "passenger")
 public class Passenger {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(length = 50)
     private String name;
+    @Column(length = 50)
     private String phone;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id",
+            foreignKey = @ForeignKey(name = "contract_address_fk"))
     private Address address;
 
     public Passenger(String name, String phone, Address address) {
+
         this.name = name;
         this.phone = phone;
         this.address = address;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
+    public Passenger() {
     }
 
     public Address getAddress() {
         return address;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setAddress(Address address) {
         this.address = address;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Passenger that = (Passenger) o;
-        return Objects.equals(name, that.name) && Objects.equals(phone, that.phone)
-                && Objects.equals(address, that.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, phone, address);
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override
     public String toString() {
-        return "Passengers{" +
-                "name='" + name + '\'' +
+        return "Passenger{" +
+                " name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
-                ", address=" + address +
                 '}';
     }
 }

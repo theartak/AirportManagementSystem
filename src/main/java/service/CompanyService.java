@@ -1,35 +1,32 @@
 package service;
 
-import dao.daoImpl.CompanyDaoImpl;
 import model.Company;
+import repository.CompanyRepo;
+import java.util.List;
 
-import java.sql.Date;
-import java.util.Set;
-
-public class CompanyService {
-    private CompanyDaoImpl companyDao = new CompanyDaoImpl();
-
-    public Company findByID(int id) {
-        return companyDao.findByID(id);
+public class CompanyService implements CrudService<Company> {
+    CompanyRepo companyRepo=new CompanyRepo();
+    @Override
+    public void create(Company company) {
+        companyRepo.create(company);
     }
-
-    public void create(String companyName, String sinceDate) {
-        companyDao.create(new Company(companyName, Date.valueOf(sinceDate)));
+    @Override
+    public Company read(Long id) {
+        return companyRepo.read(id);
     }
-
-    public void delete(int id) {
-        companyDao.deleteById(id);
+    @Override
+    public void update(Long id, Company company) {
+        companyRepo.update(id,company);
     }
-
-    public void update(int id, String companyName, String sinceDate) {
-        companyDao.update(id, new Company(companyName, Date.valueOf(sinceDate)));
+    @Override
+    public void delete(Long id) {
+        companyRepo.delete(id);
     }
-
-    public Set<Company> findAll() {
-        return companyDao.findAll();
+    @Override
+    public List<Company> getAll() {
+        return companyRepo.getAll();
     }
-
-    public Set<Company> get(int offset, int perPage, String sort) {
-        return companyDao.get(offset, perPage, sort);
+    public List<Company> getAll(int offset, int perPage, String sortColum) {
+        return companyRepo.get(offset,perPage,sortColum);
     }
 }

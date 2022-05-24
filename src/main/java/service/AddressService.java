@@ -1,30 +1,27 @@
 package service;
 
-import dao.daoImpl.AddressDaoImpl;
 import model.Address;
+import repository.AddressRepo;
+import java.util.List;
 
-import java.util.Set;
-
-public class AddressService {
-    private AddressDaoImpl addressDao = new AddressDaoImpl();
-
-    public void create(String country, String city) {
-        addressDao.create(new Address(country, city));
+public class AddressService implements CrudService<Address> {
+    AddressRepo addressRepo = new AddressRepo();
+    public void create(Address address) {
+        addressRepo.create(address);
     }
-
-    public Address findId(int id) {
-        return addressDao.findByID(id);
+    public Address read(Long id) {
+        return addressRepo.read(id);
     }
-
-    public void delete(int id) {
-        addressDao.deleteById(id);
+    public void update(Long id, Address address) {
+        addressRepo.update(id, address);
     }
-
-    public void update(int id, String country, String city) {
-        addressDao.update(id, new Address(country, city));
+    public void delete(Long id) {
+        addressRepo.delete(id);
     }
-
-    public Set<Address> findAll() {
-        return addressDao.findAll();
+    public List<Address> getAll() {
+        return addressRepo.getAll();
+    }
+    public List<Address> getAll(int offset,int perPage,String sortColum){
+        return addressRepo.get(offset,perPage,sortColum);
     }
 }

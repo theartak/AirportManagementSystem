@@ -1,43 +1,43 @@
 package model;
 
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.Set;
 
+@Entity
+@Table(name = "address")
 public class Address {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(length = 50)
     private String country;
+    @Column(length = 50)
     private String city;
+    @OneToMany(mappedBy = "address")
+    private Set<Passenger> passengers;
 
     public Address(String country, String city) {
         this.country = country;
         this.city = city;
     }
 
-    public String getCity() {
-        return city;
+    public Address() {
     }
 
     public String getCountry() {
         return country;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public String getCity() {
+        return city;
     }
 
     public void setCountry(String country) {
         this.country = country;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Address address = (Address) o;
-        return Objects.equals(country, address.country) && Objects.equals(city, address.city);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(country, city);
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @Override

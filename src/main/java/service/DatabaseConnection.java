@@ -19,7 +19,6 @@ public class DatabaseConnection {
         }
     }
 
-
     public static DatabaseConnection getDbConnection() {
         if (dbConnection == null) {
             dbConnection = new DatabaseConnection();

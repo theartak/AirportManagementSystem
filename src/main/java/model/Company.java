@@ -1,51 +1,51 @@
 package model;
 
-import java.sql.Date;
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
 
+@Entity
+@Table(name = "company")
 public class Company {
-    private String name_cmp;
-    private Date date_found;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(length = 50)
+    private String name;
+    private Date date;
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private Set<Trip> tripes;
 
-    public Company(String name_cmp, Date date_found) {
-        this.name_cmp = name_cmp;
-        this.date_found = date_found;
+    public Company(String name, Date date) {
+        this.name = name;
+        this.date = date;
     }
 
-    public String getName_cmp() {
-        return name_cmp;
+    public Company() {
+
     }
 
-    public Date getDate_found() {
-        return date_found;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setName_cmp(String name_cmp) {
-        this.name_cmp = name_cmp;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public void setDate_found(Date date_found) {
-        this.date_found = date_found;
+    public String getName() {
+        return name;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     @Override
     public String toString() {
         return "Company{" +
-                "name_cmp='" + name_cmp + '\'' +
-                ", date_found=" + date_found +
+                "name='" + name + '\'' +
+                ", date=" + date +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Company company = (Company) o;
-        return Objects.equals(name_cmp, company.name_cmp) && Objects.equals(date_found, company.date_found);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name_cmp, date_found);
     }
 }

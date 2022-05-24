@@ -1,52 +1,33 @@
 package service;
 
-import dao.PassInTripDao;
-import dao.daoImpl.PassengerDaoImpl;
-import model.Address;
 import model.Passenger;
-import model.Trip;
+import repository.PassengerRepo;
+import java.util.List;
 
-import java.util.Set;
+public class PassengerService implements CrudService<Passenger> {
+    PassengerRepo passengerRepo = new PassengerRepo();
 
-public class PassengerService {
-    private PassengerDaoImpl passengerDao = new PassengerDaoImpl();
-    private PassInTripDao passInTripDao = new PassInTripDao();
-
-    public void create(String name, String phone, String country, String city) {
-        passengerDao.create(new Passenger(name, phone, new Address(country, city)));
+    public void create(Passenger passenger) {
+        passengerRepo.create(passenger);
     }
 
-    public Passenger findId(int id) {
-        return passengerDao.findByID(id);
+    public Passenger read(Long id) {
+        return passengerRepo.read(id);
     }
 
-    public Set<Passenger> get(int offset, int perPage, String sort) {
-        return passengerDao.get(offset, perPage, sort);
+    public void update(Long id, Passenger passenger) {
+        passengerRepo.update(id, passenger);
     }
 
-    public Set<Passenger> findAll() {
-        return passengerDao.findAll();
+    public void delete(Long id) {
+        passengerRepo.delete(id);
     }
 
-    public void delete(int id) {
-        passengerDao.deleteById(id);
+    public List<Passenger> getAll() {
+        return passengerRepo.getAll();
     }
 
-    public void update(int id, String newName, String newPhone, String newCountry, String newCity) {
-        passengerDao.update(id, new Passenger(newName, newPhone, new Address(newCountry, newCity)));
+    public List<Passenger> getAll(int offset, int perPage, String sortColum) {
+        return passengerRepo.getAll(offset, perPage, sortColum);
     }
-
-
-    void registerTrip(int trip_no, int ID_psg, String place) {
-        passInTripDao.create(trip_no, ID_psg, place);
-    }
-
-    void cancelTrip(int ID_psg, int trip_no) {
-        passInTripDao.delete(ID_psg, trip_no);
-    }
-
-    public Set<Passenger> getPassengersOfTrip(int tripNumber) {
-        return passengerDao.getPassengersOfTrip(tripNumber);
-    }
-
 }

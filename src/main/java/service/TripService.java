@@ -1,46 +1,59 @@
 package service;
 
-import dao.daoImpl.TripDaoImpl;
 import model.Trip;
-
-import java.sql.Time;
-import java.util.Set;
+import org.hibernate.Session;
+import repository.TripRepo;
+import javax.persistence.Query;
+import java.util.List;
 
 public class TripService {
-    TripDaoImpl tripDao = new TripDaoImpl();
+    TripRepo tripRepo = new TripRepo();
 
-    public Trip findByID(int tripNo) {
-        return tripDao.findByID(tripNo);
+    public void create(Trip trip) {
+        Session session = AirportSessionFactory.getFactory().openSession();
+        session.beginTransaction();
+        session.save(trip);
+        session.getTransaction().commit();
+        session.close();
     }
 
-    public void create(int trip_no, int ID_cmp, String plane, String town_from, String town_to, String time_out, String time_in) {
-        tripDao.create(new Trip(trip_no, ID_cmp, plane, town_from, town_to, Time.valueOf(time_out), Time.valueOf(time_in)));
+    public Trip read(Long id) {
+        Session session = AirportSessionFactory.getFactory().openSession();
+        session.beginTransaction();
+        Trip trip = session.find(Trip.class, id);
+        session.getTransaction().commit();
+        session.close();
+        return trip;
     }
 
-    public void deleteById(int tripNO) {
-        tripDao.deleteById(tripNO);
+    public void update(Long id, Trip trip) {
+        Session session = AirportSessionFactory.getFactory().openSession();
+        session.beginTransaction();
+        Trip tp = session.find(Trip.class, id);
+        tp.setTownTo(trip.getTownTo());
+        tp.setTownFrom(trip.getTownFrom());
+        tp.setTimeOut(trip.getTimeOut());
+        tp.setTimeIn(trip.getTimeIn());
+        session.update(tp);
+        session.getTransaction().commit();
+        session.close();
     }
 
-    public void update(int trip_no, int ID_cmp, String plane, String town_from, String town_to, String time_out, String time_in) {
-        tripDao.update(trip_no, new Trip(trip_no, ID_cmp, plane, town_from, town_to, Time.valueOf(time_out), Time.valueOf(time_in)));
+    public void delete(Long id) {
+        Session session = AirportSessionFactory.getFactory().openSession();
+        session.beginTransaction();
+        session.remove(session.find(Trip.class, id));
+        session.getTransaction().commit();
+        session.close();
     }
 
-    public void findAll() {
-        Set<Trip> tripSet = tripDao.findAll();
-        for (Trip t : tripSet) {
-            System.out.println(t);
-        }
-    }
-
-    public Set<Trip> get(int offset, int perPage, String sort) {
-        return tripDao.get(offset, perPage, sort);
-    }
-
-    public Set<Trip> getTripsTo(String city) {
-        return tripDao.getTripsTo(city);
-    }
-
-    public Set<Trip> getTripsFrom(String city) {
-        return tripDao.getTripsFrom(city);
+    public List<Trip> getAll() {
+        Session session = AirportSessionFactory.getFactory().openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("from Trip", Trip.class);
+        List<Trip> trips = query.getResultList();
+        session.getTransaction().commit();
+        session.close();
+        return trips;
     }
 }
